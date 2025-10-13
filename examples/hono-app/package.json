@@ -1,0 +1,19 @@
+{
+  "name": "route-wizard-hono-example",
+  "version": "1.0.0",
+  "description": "Hono example using @chaeco/route-wizard",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "NODE_ENV=development node app.js",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "dependencies": {
+    "@chaeco/route-wizard": "file:../..",
+    "hono": "^4.0.0"
+  },
+  "keywords": ["hono", "routing", "example"],
+  "author": "chaeco",
+  "license": "MIT"
+}

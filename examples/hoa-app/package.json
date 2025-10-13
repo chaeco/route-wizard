@@ -1,0 +1,19 @@
+{
+  "name": "route-wizard-hoa-example",
+  "version": "1.0.0",
+  "description": "Hoa.js example using @chaeco/route-wizard",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "NODE_ENV=development node app.js",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "dependencies": {
+    "@chaeco/route-wizard": "file:../..",
+    "hoa": "^0.1.0"
+  },
+  "keywords": ["hoa", "routing", "example"],
+  "author": "chaeco",
+  "license": "MIT"
+}
