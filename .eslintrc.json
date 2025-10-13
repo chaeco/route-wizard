@@ -18,7 +18,7 @@
     "@typescript-eslint/no-empty-function": "warn",
     "prefer-const": "error",
     "no-var": "error",
-    "no-console": "warn",
+    "no-console": ["warn", { "allow": ["error"] }],
     "no-debugger": "error",
     "eqeqeq": ["error", "always"],
     "curly": ["error", "all"],
@@ -26,5 +26,5 @@
     "no-implied-eval": "error",
     "no-new-func": "error"
   },
-  "ignorePatterns": ["dist/", "node_modules/", "coverage/"]
+  "ignorePatterns": ["dist/", "node_modules/", "coverage/", "example/", "benchmarks/"]
 }

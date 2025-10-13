@@ -1,5 +1,5 @@
 /**
- * Auto Route Registrar
+ * Route Wizard - File-based automatic route registration
  */
-export type { RouteHandler, RouteDefinition, RouteWizardOptions } from './types.js';
-export { routeWizard } from './middleware.js';
+export { scanRoutes, Route } from './scanner.js';
+export { registerRoutes, RegisterOptions } from './registrar.js';

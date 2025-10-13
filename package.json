@@ -1,6 +1,6 @@
 {
   "name": "@chaeco/route-wizard",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "File-based automatic route registration for Node.js frameworks",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -9,20 +9,16 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.js"
-    },
-    "./adapters": {
-      "types": "./dist/adapters/index.d.ts",
-      "import": "./dist/adapters/index.js",
-      "require": "./dist/adapters/index.js"
     }
   },
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
     "clean": "rm -rf dist",
-    "test": "jest",
+    "test": "jest --config jest.config.js",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+    "bench": "node benchmarks/index.js",
     "lint": "eslint src/**/*.ts tests/**/*.ts",
     "lint:fix": "eslint src/**/*.ts tests/**/*.ts --fix",
     "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\" \"*.md\"",

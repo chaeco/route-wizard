@@ -51,9 +51,7 @@ class PerformanceMonitor {
         const averageRouteScanTime = this.routeScanTimes.length > 0
             ? this.routeScanTimes.reduce((a, b) => a + b, 0) / this.routeScanTimes.length
             : 0;
-        const averageResponseTime = this.requestCount > 0
-            ? this.totalResponseTime / this.requestCount
-            : 0;
+        const averageResponseTime = this.requestCount > 0 ? this.totalResponseTime / this.requestCount : 0;
         return {
             routeScanTime: averageRouteScanTime,
             cacheHitRate,

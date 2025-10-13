@@ -16,117 +16,139 @@
 
 基于文件的自动路由注册器，为 Node.js 框架提供零配置的路由管理。停止手动注册路由，让你的文件结构为你工作！
 
-## 特性
+## ✨ 特性
 
 - 📁 **文件驱动路由**: 通过文件结构自动生成路由，零配置
-- 🔄 **热重载**: 开发友好的文件监听，自动路由更新
 - 🏗️ **多框架支持**: 可扩展设计，支持 Express、Koa、Hoa.js、Hono、Fastify 和 NestJS
 - 📝 **完整 TypeScript 支持**: 完整的类型定义，提供更好的开发体验
-- ⚡ **高性能**: 动态导入和智能缓存机制
+- ⚡ **高性能**: 同步扫描，零运行时开销
 - 🧩 **插件架构**: 易于扩展，支持为新框架创建自定义适配器
 - 🎯 **约定优于配置**: 合理的默认值和广泛的自定义选项
 - 🛡️ **生产就绪**: 全面的测试覆盖率和生产环境验证
+- 🔄 **动态参数**: 支持嵌套和可选参数
 
-## 安装
+## 🚀 安装
 
 ```bash
 npm install @chaeco/route-wizard
 ```
 
-## 快速开始
+## 🎯 快速开始
 
 ### 1. 创建控制器文件
 
 在 `controllers` 目录下创建路由文件：
 
-```javascript
-// controllers/get-users.js
-module.exports = async (ctx) => {
-  ctx.body = { users: [] }
-}
+```typescript
+// controllers/users/get.ts
+export default async (req, res) => {
+  const users = await db.users.findMany();
+  res.json(users);
+};
 
-// controllers/post-login.js
-module.exports = async (ctx) => {
-  const { username, password } = ctx.request.body
-  // 处理登录逻辑
-  ctx.body = { token: '...' }
-}
+// controllers/users/post.ts
+export default async (req, res) => {
+  const user = await db.users.create({ data: req.body });
+  res.json(user);
+};
+
+// controllers/users/[id]/get.ts
+export default async (req, res) => {
+  const user = await db.users.findUnique({
+    where: { id: req.params.id },
+  });
+  res.json(user);
+};
 ```
 
-### 2. 使用中间件
-
-```javascript
-const { routeWizard } = require('@chaeco/route-wizard')
-
-// 在你的应用中使用
-app.use(routeWizard({
-  controllersPath: './controllers' // 可选，默认 './controllers'
-}))
-```
-
-### TypeScript 示例
+### 2. 注册路由
 
 ```typescript
-import { routeWizard } from '@chaeco/route-wizard'
+import express from 'express';
+import { registerRoutes } from '@chaeco/route-wizard';
 
-interface User {
-  id: number
-  name: string
-}
+const app = express();
+app.use(express.json());
 
-// controllers/get-users.ts
-export default async (ctx: any) => {
-  const users: User[] = [
-    { id: 1, name: 'Alice' },
-    { id: 2, name: 'Bob' }
-  ]
-  ctx.body = { users }
-}
+// 注册路由 - 就是这么简单！
+registerRoutes(app, {
+  dir: './controllers',
+  prefix: '/api', // 可选
+});
 
-// controllers/post-login.ts
-export default async (ctx: any) => {
-  const { username, password } = ctx.request.body
-  // 处理登录逻辑
-  ctx.body = { token: 'jwt-token-here' }
-}
-
-// 在你的主应用中
-app.use(routeWizard({
-  controllersPath: './controllers',
-  routePrefix: 'api'
-}))
+app.listen(3000, () => {
+  console.log('服务器运行在 http://localhost:3000');
+});
 ```
 
-## 文件命名规则
+### 3. 你的路由已就绪
 
-路由文件必须遵循以下命名约定：
+```text
+GET    /api/users          # 获取所有用户
+POST   /api/users          # 创建用户
+GET    /api/users/:id      # 根据ID获取用户
+PUT    /api/users/:id      # 更新用户
+DELETE /api/users/:id      # 删除用户
+```
 
-- `get-users.js` → `GET /users`
-- `post-login.js` → `POST /login`
-- `put-update-profile.js` → `PUT /update-profile`
-- `delete-account.js` → `DELETE /account`
+## 📁 文件约定
 
-支持的 HTTP 方法：`get`, `post`, `put`, `delete`, `patch`, `head`, `options`
-
-## 目录结构
+Route-wizard 使用清晰直观的文件结构：
 
 ```text
 controllers/
-├── auth/
-│   ├── post-login.js
-│   ├── post-register.js
-│   └── post-logout.js
 ├── users/
-│   ├── get-profile.js
-│   ├── put-update-profile.js
-│   ├── get-users.js
-│   └── delete-user.js
-├── products/
-│   ├── get-products.js
-│   ├── post-products.js
-│   ├── get-product.js
-│   └── put-product.js
-├── orders/
+│   ├── get.ts              # GET /users
+│   ├── post.ts             # POST /users
+│   └── [id]/
+│       ├── get.ts          # GET /users/:id
+│       ├── put.ts          # PUT /users/:id
+│       └── delete.ts       # DELETE /users/:id
+├── users/
+│   └── [userId]/
+│       └── posts/
+│           ├── get.ts              # GET /users/:userId/posts
+│           └── [postId]/
+│               └── get.ts          # GET /users/:userId/posts/:postId
+└── search/
+    └── [[query]]/
+        └── get.ts                  # GET /search/:query?
+```
+
+### 参数类型
+
+- `[param]` → `:param` (必需参数)
+- `[[param]]` → `:param?` (可选参数)
+
+## 🔧 高级用法
+
+### 多参数
+
+```typescript
+// controllers/users/[userId]/posts/[postId]/get.ts
+export default async (req, res) => {
+  const { userId, postId } = req.params;
+  const post = await db.posts.findFirst({
+    where: {
+      id: parseInt(postId),
+      userId: parseInt(userId),
+    },
+  });
+  res.json({ post });
+};
+```
+
+### 可选参数
+
+```typescript
+// controllers/search/[[query]]/get.ts
+export default async (req, res) => {
+  const { query } = req.params
+
+  if (query) {
+    const results = await searchDatabase(query)
+    res.json({ query, results })
+  } else {
 │   ├── get-orders.js
 │   └── post-orders.js
 └── get-health.js
@@ -151,128 +173,64 @@ controllers/
 
 ## API
 
-### routeWizard(options)
+### `scanRoutes(options)`
 
-创建路由自动注册中间件。
+扫描路由目录并返回路由配置数组。
 
-#### 参数
+#### scanRoutes 参数
 
-| 参数 | 类型 | 描述 | 默认值 |
-|------|------|------|--------|
-| `controllersPath` | `string` | 控制器目录路径 | `'./controllers'` |
-| `methodMappings` | `Record<string, HttpMethod>` | 自定义方法映射 | 标准HTTP方法映射 |
-| `separator` | `string` | 文件名前缀和路由名之间的分隔符 | `'-'` |
-| `ignorePatterns` | `string[]` | 要忽略的文件/目录glob模式数组 | `[]` |
-| `logEnabled` | `boolean` | 是否启用日志输出 | `true` |
-| `routePrefix` | `string` | 为所有路由添加的前缀 | `''` |
-| `enableCache` | `boolean` | 是否启用路由缓存 | `true` |
-| `cacheTtl` | `number` | 缓存过期时间（毫秒） | `30000` (30秒) |
-| `enableWatch` | `boolean` | 是否启用文件监听以支持热重载 | `false` |
-| `watchOptions` | `object` | 文件监听选项 | `{}` |
+| 参数         | 类型      | 描述                 | 默认值            |
+| ------------ | --------- | -------------------- | ----------------- |
+| `dir`        | `string`  | 控制器目录路径       | `'./controllers'` |
+| `prefix`     | `string`  | 为所有路由添加的前缀 | `''`              |
+| `logEnabled` | `boolean` | 是否启用日志输出     | `true`            |
 
 #### 返回
 
-中间件函数，可用于支持中间件的框架。
+`RouteConfig[]` - 路由配置数组
 
-#### 完整配置示例
+#### scanRoutes 示例
 
-```javascript
-const { routeWizard } = require('@chaeco/route-wizard')
+```typescript
+import { scanRoutes } from '@chaeco/route-wizard';
 
-// 完整配置示例
-app.use(routeWizard({
-  controllersPath: './controllers',
-  methodMappings: {
-    'get': 'GET',
-    'post': 'POST',
-    'ip_post': 'POST'
-  },
-  separator: '_',
-  ignorePatterns: [
-    '**/*.test.js',    // 忽略测试文件
-    '**/*.spec.js',    // 忽略规格文件
-    '**/index.js',     // 忽略index文件
-    'config/**'        // 忽略config目录
-  ],
-  logEnabled: true,    // 启用日志输出
-  routePrefix: 'api',  // 为所有路由添加 /api 前缀
-  enableCache: true,   // 启用路由缓存
-  cacheTtl: 60000      // 缓存1分钟
-}))
+const routes = scanRoutes({
+  dir: './routes',
+  prefix: '/api',
+  logEnabled: false,
+});
+
+console.log(routes);
+// [
+//   { method: 'GET', path: '/api/users', handler: [Function] },
+//   { method: 'POST', path: '/api/users', handler: [Function] },
+//   ...
+// ]
 ```
 
-这将扫描controllers目录，但忽略所有测试文件、index文件和config目录，并为所有路由添加 `/api` 前缀。
+### `registerRoutes(app, options)`
 
-## 缓存机制
+扫描路由目录并直接注册到应用实例。
 
-为了提高性能，route-wizard 默认启用了路由缓存机制：
+#### registerRoutes 参数
 
-- **缓存键**: 基于配置参数（controllersPath、methodMappings、separator、ignorePatterns、routePrefix）生成
-- **缓存过期**: 默认30秒，可通过 `cacheTtl` 选项自定义
-- **缓存失效**: 当配置文件发生变化时，缓存会自动失效
+| 参数         | 类型      | 描述                       | 默认值            |
+| ------------ | --------- | -------------------------- | ----------------- |
+| `app`        | `any`     | 应用实例（Express、Koa等） | -                 |
+| `dir`        | `string`  | 控制器目录路径             | `'./controllers'` |
+| `prefix`     | `string`  | 为所有路由添加的前缀       | `''`              |
+| `logEnabled` | `boolean` | 是否启用日志输出           | `true`            |
 
-```javascript
-// 禁用缓存（每次请求都重新扫描）
-app.use(routeWizard({
-  enableCache: false
-}))
+#### registerRoutes 示例
 
-// 自定义缓存时间（5分钟）
-app.use(routeWizard({
-  cacheTtl: 300000
-}))
-```
+```typescript
+import { registerRoutes } from '@chaeco/route-wizard';
 
-## 文件监听（热重载）
-
-启用文件监听功能后，当控制器文件发生变化时，路由缓存会自动清除，确保开发时的热重载体验：
-
-```javascript
-// 启用文件监听
-app.use(routeWizard({
-  enableWatch: true,
-  watchOptions: {
-    persistent: true,
-    ignored: ['**/*.log', '**/node_modules/**']
-  }
-}))
-```
-
-文件监听功能会：
-
-- 监听控制器目录的文件变化
-- 当文件被修改、添加或删除时清除路由缓存
-- 在下次请求时自动重新扫描和注册路由
-- 支持忽略特定文件或目录
-
-**注意**: 文件监听功能主要用于开发环境，生产环境建议禁用以提高性能。
-
-例如，`get-users.js` 将生成路由 `GET /api/users` 而不是 `GET /users`。
-
-## 框架适配器
-
-Route-wizard 为流行 Node.js 框架提供了适配器，可以单独引入：
-
-### Express
-
-```javascript
-const { expressRouteWizard } = require('@chaeco/route-wizard/adapters/express')
-
-app.use(expressRouteWizard({
-  controllersPath: './controllers',
-  routePrefix: 'api'
-}))
-```
-
-### Koa
-
-```javascript
-const { koaRouteWizard } = require('@chaeco/route-wizard/adapters/koa')
-
-app.use(koaRouteWizard({
-  controllersPath: './controllers',
-  routePrefix: 'api'
-}))
+registerRoutes(app, {
+  dir: './routes',
+  prefix: '/api',
+  logEnabled: false,
+});
 ```
 
 ## 贡献指南
@@ -306,11 +264,10 @@ npm run lint
 
 查看 `examples/` 目录中的完整工作应用程序，演示了 route-wizard 与不同框架的集成：
 
-- **[Express.js 示例](examples/express-app/)** - 传统 Express.js 集成，支持中间件
+- **[Express.js 示例](examples/express-app/)** - 传统 Express.js 集成
 - **[Koa.js 示例](examples/koa-app/)** - 下一代框架，支持 async/await 模式
 - **[Fastify 示例](examples/fastify-app/)** - 高性能框架，支持模式验证
 - **[Hono 示例](examples/hono-app/)** - 轻量级框架，适用于边缘计算和多种运行时
-- **[Hoa.js 示例](examples/hoa-app/)** - 基于 Web 标准的极简框架
 
 每个示例都包含：
 
