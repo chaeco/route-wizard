@@ -94,7 +94,7 @@ DELETE /api/users/:id      # Delete user
 
 Route-wizard uses a clean, intuitive file structure with support for both folder-based and filename-based routing:
 
-### Folder-based (legacy):
+### Folder-based (legacy)
 
 ```text
 controllers/
@@ -116,7 +116,7 @@ controllers/
         └── get.ts                  # GET /search/:query?
 ```
 
-### Filename-based (recommended for deep nesting):
+### Filename-based (recommended for deep nesting)
 
 ```text
 controllers/
