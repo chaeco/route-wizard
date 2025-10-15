@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.3] - 2025-10-15
+
+### Added
+
+- **Filename-based routing**: Support for embedding paths in filenames to reduce folder depth
+  - Example: `users.[id].posts.[postId].get.ts` → `GET /users/:id/posts/:postId`
+  - Maintains backward compatibility with folder-based structure
+- **Custom separator support**: Allow custom separators for filename-based routing
+  - Default: `.` (dot)
+  - Configurable: `separator: '_'` for `users_[id]_posts_get.ts`
+- **Depth limiting**: Prevent overly complex routes with `maxDepth` option
+  - Routes exceeding depth limit are ignored
+  - Default: 10 levels deep
+- Enhanced file convention documentation with examples for both approaches
+
+### Changed
+
+- **Code refactoring**: Eliminated duplicate parameter parsing logic
+- **Improved maintainability**: Split complex functions into focused, single-purpose functions
+- **Better error handling**: More robust route extraction and validation
+
 ## [0.0.2] - 2025-10-14
 
 ### Added

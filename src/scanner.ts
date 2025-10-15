@@ -2,9 +2,10 @@
  * Route Scanner - Synchronous file-based route discovery
  *
  * File convention:
- *   users/get.ts           → GET /users
- *   users/[id]/GET.ts      → GET /users/:id
- *   users/[id]/PUT.ts      → PUT /users/:id
+ *   users.get.ts           → GET /users
+ *   users.[id].get.ts      → GET /users/:id
+ *   users.[id].posts.[postId].get.ts → GET /users/:id/posts/:postId
+ *   users/[id]/GET.ts      → GET /users/:id (legacy folder structure)
  */
 
 import { readdirSync, statSync } from 'fs';
@@ -17,16 +18,91 @@ export interface Route {
   handler: ((...args: unknown[]) => unknown) | null;
 }
 
+export interface ScanOptions {
+  separator?: string; // Default: '.'
+  maxDepth?: number; // Default: 10
+}
+
 const HTTP_METHODS = ['get', 'post', 'put', 'delete', 'patch', 'head', 'options'];
+const DEFAULT_OPTIONS: Required<ScanOptions> = {
+  separator: '.',
+  maxDepth: 10,
+};
+
+/**
+ * Parse a route segment (folder name or filename part) into URL path segment
+ */
+function parseRouteSegment(segment: string): string {
+  if (segment.startsWith('[[') && segment.endsWith(']]')) {
+    // Optional parameter: [[query]] → :query?
+    return `:${segment.slice(2, -2)}?`;
+  }
+  if (segment.startsWith('[') && segment.endsWith(']')) {
+    // Required parameter: [id] → :id
+    return `:${segment.slice(1, -1)}`;
+  }
+  return segment;
+}
+
+/**
+ * Extract route information from a file path
+ */
+function extractRouteInfo(
+  filePath: string,
+  basePath: string,
+  options: Required<ScanOptions>
+): Route | null {
+  const ext = extname(filePath);
+  if (ext !== '.ts' && ext !== '.js') {
+    return null;
+  }
+
+  const fileName = path.basename(filePath, ext);
+  const parts = fileName.split(options.separator);
+
+  // Last part should be HTTP method
+  const methodName = parts.pop()!;
+  if (!HTTP_METHODS.includes(methodName.toLowerCase())) {
+    return null;
+  }
+
+  // If no parts left, this is legacy folder-based route
+  // The path comes from basePath only
+  if (parts.length === 0) {
+    const routePath = basePath || '/';
+    const handler = loadHandler(filePath);
+    const method = methodName.toUpperCase();
+    return { method, path: routePath, handler };
+  }
+
+  // Filename-based routing: convert parts to path segments
+  const pathSegments = parts.map(parseRouteSegment);
+  const routePath = basePath
+    ? `${basePath}/${pathSegments.join('/')}`
+    : `/${pathSegments.join('/')}`;
+
+  // Check depth limit
+  const depth = (basePath + routePath).split('/').filter(Boolean).length;
+  if (depth > options.maxDepth) {
+    return null;
+  }
+
+  const handler = loadHandler(filePath);
+  const method = methodName.toUpperCase();
+
+  return { method, path: routePath, handler };
+}
 
 /**
  * Scan directory for route files synchronously
  * @param dir - Directory to scan
  * @param basePath - Base URL path (internal use)
+ * @param options - Scan configuration options
  * @returns Array of route definitions
  */
-export function scanRoutes(dir: string, basePath: string = ''): Route[] {
+export function scanRoutes(dir: string, basePath: string = '', options: ScanOptions = {}): Route[] {
   const routes: Route[] = [];
+  const config = { ...DEFAULT_OPTIONS, ...options };
 
   try {
     const items = readdirSync(dir);
@@ -36,37 +112,20 @@ export function scanRoutes(dir: string, basePath: string = ''): Route[] {
       const stat = statSync(fullPath);
 
       if (stat.isDirectory()) {
-        // Handle dynamic parameters:
-        // [id] → :id (required parameter)
-        // [[query]] → :query? (optional parameter)
-        let segment = item;
-
-        if (item.startsWith('[[') && item.endsWith(']]')) {
-          // Optional parameter: [[query]] → :query?
-          const paramName = item.slice(2, -2);
-          segment = `:${paramName}?`;
-        } else if (item.startsWith('[') && item.endsWith(']')) {
-          // Required parameter: [id] → :id
-          const paramName = item.slice(1, -1);
-          segment = `:${paramName}`;
-        }
-
+        // Recursively scan subdirectories
+        const segment = parseRouteSegment(item);
         const newBasePath = basePath ? `${basePath}/${segment}` : `/${segment}`;
-        routes.push(...scanRoutes(fullPath, newBasePath));
-      } else if (stat.isFile()) {
-        const ext = extname(item);
-        if (ext !== '.ts' && ext !== '.js') {
-          continue;
+
+        // Check depth before recursing
+        const currentDepth = newBasePath.split('/').filter(Boolean).length;
+        if (currentDepth <= config.maxDepth) {
+          routes.push(...scanRoutes(fullPath, newBasePath, config));
         }
-
-        const methodName = item.slice(0, -ext.length); // Remove extension
-
-        if (HTTP_METHODS.includes(methodName.toLowerCase())) {
-          const path = basePath || '/';
-          const handler = loadHandler(fullPath);
-          const method = methodName.toUpperCase(); // Store as uppercase for consistency
-
-          routes.push({ method, path, handler });
+      } else if (stat.isFile()) {
+        // Handle both filename-based and legacy folder-based routes
+        const route = extractRouteInfo(fullPath, basePath, config);
+        if (route) {
+          routes.push(route);
         }
       }
     }

@@ -26,16 +26,36 @@ describe('Route Wizard V2', () => {
       mkdirSync(join(testDir, '[id]'), { recursive: true });
       mkdirSync(join(testDir, '[[optional]]'), { recursive: true });
 
-            // Create test route files
+      // Create test route files
       writeFileSync(join(testDir, 'users', 'get.ts'), 'export default (req, res) => res.json({});');
-      writeFileSync(join(testDir, 'users', 'post.ts'), 'export default (req, res) => res.json({});');
+      writeFileSync(
+        join(testDir, 'users', 'post.ts'),
+        'export default (req, res) => res.json({});'
+      );
       writeFileSync(join(testDir, '[id]', 'get.ts'), 'export default (req, res) => res.json({});');
-      writeFileSync(join(testDir, '[[optional]]', 'get.ts'), 'export default (req, res) => res.json({});');
-      
+      writeFileSync(
+        join(testDir, '[[optional]]', 'get.ts'),
+        'export default (req, res) => res.json({});'
+      );
+
       // Create nested parameter structure for testing
       const nestedPath = join(testDir, 'api', 'v1', 'users', '[userId]', 'posts', '[postId]');
       mkdirSync(nestedPath, { recursive: true });
       writeFileSync(join(nestedPath, 'get.ts'), 'export default (req, res) => res.json({});');
+
+      // Create filename-based routes for testing
+      writeFileSync(
+        join(testDir, 'users.[id].posts.get.ts'),
+        'export default (req, res) => res.json({});'
+      );
+      writeFileSync(
+        join(testDir, 'users.[id].posts.[postId].get.ts'),
+        'export default (req, res) => res.json({});'
+      );
+      writeFileSync(
+        join(testDir, 'search.[[query]].get.ts'),
+        'export default (req, res) => res.json({});'
+      );
     } catch {
       // Directory setup might fail
     }
@@ -112,10 +132,10 @@ describe('Route Wizard V2', () => {
 
     it('should handle files with default export', () => {
       const routes = scanRoutes(testDir);
-      const userRoutes = routes.filter(route => route.path.includes('/users'));
+      const userRoutes = routes.filter((route) => route.path.includes('/users'));
 
       expect(userRoutes.length).toBeGreaterThan(0);
-      userRoutes.forEach(route => {
+      userRoutes.forEach((route) => {
         expect(route.handler).toBeDefined();
         expect(typeof route.handler).toBe('function');
       });
@@ -126,7 +146,7 @@ describe('Route Wizard V2', () => {
       writeFileSync(join(testDir, 'options.js'), 'module.exports = (req, res) => res.json({});');
 
       const routes = scanRoutes(testDir);
-      const commonJsRoute = routes.find(route => route.method === 'OPTIONS');
+      const commonJsRoute = routes.find((route) => route.method === 'OPTIONS');
 
       expect(commonJsRoute).toBeDefined();
       expect(commonJsRoute?.handler).toBeDefined();
@@ -138,7 +158,9 @@ describe('Route Wizard V2', () => {
       writeFileSync(join(testDir, 'users', 'post.json'), '{"not": "a route"}');
 
       const routes = scanRoutes(testDir);
-      const textRoutes = routes.filter(route => route.path.includes('.txt') || route.path.includes('.json'));
+      const textRoutes = routes.filter(
+        (route) => route.path.includes('.txt') || route.path.includes('.json')
+      );
 
       expect(textRoutes.length).toBe(0);
     });
@@ -147,13 +169,68 @@ describe('Route Wizard V2', () => {
       // Create complex nested structure
       const deepPath = join(testDir, 'api', 'v1', 'users', '[userId]', 'posts', '[postId]');
       mkdirSync(deepPath, { recursive: true });
-      writeFileSync(join(deepPath, 'get.ts'), 'export default (req: any, res: any) => res.json({});');
+      writeFileSync(
+        join(deepPath, 'get.ts'),
+        'export default (req: any, res: any) => res.json({});'
+      );
 
       const routes = scanRoutes(testDir);
-      const deepRoute = routes.find(route => route.path === '/api/v1/users/:userId/posts/:postId');
+      const deepRoute = routes.find(
+        (route) => route.path === '/api/v1/users/:userId/posts/:postId'
+      );
 
       expect(deepRoute).toBeDefined();
       expect(deepRoute?.method).toBe('GET');
+    });
+
+    it('should handle filename-based routing with embedded paths', () => {
+      const routes = scanRoutes(testDir);
+
+      // Check filename-based routes
+      const filenameRoute1 = routes.find((route) => route.path === '/users/:id/posts');
+      const filenameRoute2 = routes.find((route) => route.path === '/users/:id/posts/:postId');
+      const filenameRoute3 = routes.find((route) => route.path === '/search/:query?');
+
+      expect(filenameRoute1).toBeDefined();
+      expect(filenameRoute1?.method).toBe('GET');
+      expect(filenameRoute2).toBeDefined();
+      expect(filenameRoute2?.method).toBe('GET');
+      expect(filenameRoute3).toBeDefined();
+      expect(filenameRoute3?.method).toBe('GET');
+    });
+
+    it('should support custom separator', () => {
+      // Create a temporary file with underscore separator
+      const tempFile = join(testDir, 'api_users_get.ts');
+      writeFileSync(tempFile, 'export default (req, res) => res.json({});');
+
+      const routes = scanRoutes(testDir, '', { separator: '_' });
+      const customRoute = routes.find((route) => route.path === '/api/users');
+
+      // Clean up
+      try {
+        rmSync(tempFile);
+      } catch {
+        // ignore
+      }
+
+      expect(routes.some((r) => r.path === '/api/users')).toBe(true);
+      expect(customRoute).toBeDefined();
+      expect(customRoute?.method).toBe('GET');
+    });
+
+    it('should respect maxDepth limit', () => {
+      const routes = scanRoutes(testDir, '', { maxDepth: 3 });
+
+      // Should not include the deep nested route
+      const deepRoute = routes.find(
+        (route) => route.path === '/api/v1/users/:userId/posts/:postId'
+      );
+      expect(deepRoute).toBeUndefined();
+
+      // But should include shallower routes
+      const shallowRoute = routes.find((route) => route.path === '/users');
+      expect(shallowRoute).toBeDefined();
     });
   });
 
@@ -210,7 +287,8 @@ describe('Route Wizard V2', () => {
 
       // Console.log should not be called when logEnabled is false
       expect(mockConsoleLog).not.toHaveBeenCalled();
-    });    it('should enable logging by default', () => {
+    });
+    it('should enable logging by default', () => {
       const mockApp = {
         get: jest.fn(),
         post: jest.fn(),
@@ -245,9 +323,18 @@ describe('Route Wizard V2', () => {
 
     it('should support all HTTP methods', () => {
       // Create additional test files for different HTTP methods
-      writeFileSync(join(testDir, 'put.ts'), 'export default (req: any, res: any) => res.json({});');
-      writeFileSync(join(testDir, 'delete.ts'), 'export default (req: any, res: any) => res.json({});');
-      writeFileSync(join(testDir, 'patch.ts'), 'export default (req: any, res: any) => res.json({});');
+      writeFileSync(
+        join(testDir, 'put.ts'),
+        'export default (req: any, res: any) => res.json({});'
+      );
+      writeFileSync(
+        join(testDir, 'delete.ts'),
+        'export default (req: any, res: any) => res.json({});'
+      );
+      writeFileSync(
+        join(testDir, 'patch.ts'),
+        'export default (req: any, res: any) => res.json({});'
+      );
 
       const mockApp = {
         get: jest.fn(),
@@ -270,7 +357,10 @@ describe('Route Wizard V2', () => {
 
     it('should handle JavaScript files', () => {
       // Create a .js file
-      writeFileSync(join(testDir, 'users', 'head.js'), 'module.exports = (req, res) => res.json({});');
+      writeFileSync(
+        join(testDir, 'users', 'head.js'),
+        'module.exports = (req, res) => res.json({});'
+      );
 
       const mockApp = {
         get: jest.fn(),
@@ -290,7 +380,10 @@ describe('Route Wizard V2', () => {
     it('should ignore non-route files', () => {
       // Create non-route files
       writeFileSync(join(testDir, 'utils.ts'), 'export const helper = () => {};');
-      writeFileSync(join(testDir, 'invalid.ts'), 'export default (req: any, res: any) => res.json({});');
+      writeFileSync(
+        join(testDir, 'invalid.ts'),
+        'export default (req: any, res: any) => res.json({});'
+      );
 
       const mockApp = {
         get: jest.fn(),

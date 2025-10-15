@@ -92,7 +92,9 @@ DELETE /api/users/:id      # Delete user
 
 ## 📁 File Convention
 
-Route-wizard uses a clean, intuitive file structure:
+Route-wizard uses a clean, intuitive file structure with support for both folder-based and filename-based routing:
+
+### Folder-based (legacy):
 
 ```text
 controllers/
@@ -114,12 +116,59 @@ controllers/
         └── get.ts                  # GET /search/:query?
 ```
 
+### Filename-based (recommended for deep nesting):
+
+```text
+controllers/
+├── users.get.ts            # GET /users
+├── users.post.ts           # POST /users
+├── users.[id].get.ts       # GET /users/:id
+├── users.[id].put.ts       # PUT /users/:id
+├── users.[id].delete.ts    # DELETE /users/:id
+├── users.[userId].posts.get.ts          # GET /users/:userId/posts
+├── users.[userId].posts.[postId].get.ts # GET /users/:userId/posts/:postId
+└── search.[[query]].get.ts               # GET /search/:query?
+```
+
 ### Parameter Types
 
 - `[param]` → `:param` (required parameter)
 - `[[param]]` → `:param?` (optional parameter)
 
 ## 🔧 Advanced Usage
+
+### Custom Separator
+
+You can customize the separator used in filename-based routing:
+
+```typescript
+registerRoutes(app, {
+  dir: './controllers',
+  separator: '_', // Use underscore instead of dot
+});
+```
+
+With underscore separator:
+
+```text
+controllers/
+├── api_users.get.ts        # GET /api/users
+├── users_[id].get.ts       # GET /users/:id
+└── users_[id]_posts.get.ts # GET /users/:id/posts
+```
+
+### Depth Limiting
+
+Limit the maximum route depth to prevent overly complex URLs:
+
+```typescript
+registerRoutes(app, {
+  dir: './controllers',
+  maxDepth: 3, // Maximum 3 path segments
+});
+```
+
+Routes exceeding the depth limit will be ignored.
 
 ### Multiple Parameters
 

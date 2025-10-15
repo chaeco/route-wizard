@@ -2,9 +2,9 @@
  * Route Registrar - Direct route registration for frameworks
  */
 
-import { scanRoutes } from './scanner.js';
+import { scanRoutes, ScanOptions } from './scanner.js';
 
-export interface RegisterOptions {
+export interface RegisterOptions extends ScanOptions {
   dir: string;
   prefix?: string;
   logEnabled?: boolean;
@@ -16,14 +16,21 @@ export interface RegisterOptions {
  * @param options - Registration options
  */
 export function registerRoutes(app: Record<string, unknown>, options: RegisterOptions): void {
-  const { dir, prefix = '', logEnabled = true } = options;
+  const { dir, prefix = '', logEnabled = true, separator, maxDepth } = options;
 
   // eslint-disable-next-line no-console
-  const log = logEnabled ? console.log : (() => {}); // eslint-disable-line @typescript-eslint/no-empty-function
+  const log = logEnabled ? console.log : () => {}; // eslint-disable-line @typescript-eslint/no-empty-function
 
   // Scan routes synchronously
   log('🔍 Scanning routes from:', dir); // eslint-disable-line no-console
-  const routes = scanRoutes(dir);
+  const scanOptions: ScanOptions = {};
+  if (separator !== undefined) {
+    scanOptions.separator = separator;
+  }
+  if (maxDepth !== undefined) {
+    scanOptions.maxDepth = maxDepth;
+  }
+  const routes = scanRoutes(dir, '', scanOptions);
 
   if (routes.length === 0) {
     log('⚠️  No routes found'); // eslint-disable-line no-console

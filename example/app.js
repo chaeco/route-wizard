@@ -10,11 +10,23 @@ app.use(express.json())
 // Register routes using V2
 console.log('🚀 Registering routes with V2...\n')
 
+// Example 1: Default configuration (folder-based + filename-based)
 registerRoutes(app, {
   dir: './controllers',
   prefix: '/api',
   logEnabled: true
 })
+
+console.log('\n')
+
+// Example 2: Custom separator (uncomment to try)
+// registerRoutes(app, {
+//   dir: './controllers',
+//   prefix: '/api/v2',
+//   separator: '_',  // Use underscore instead of dot
+//   maxDepth: 5,     // Limit route depth
+//   logEnabled: true
+// })
 
 console.log('\n')
 

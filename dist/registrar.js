@@ -12,12 +12,19 @@ const scanner_js_1 = require("./scanner.js");
  * @param options - Registration options
  */
 function registerRoutes(app, options) {
-    const { dir, prefix = '', logEnabled = true } = options;
+    const { dir, prefix = '', logEnabled = true, separator, maxDepth } = options;
     // eslint-disable-next-line no-console
-    const log = logEnabled ? console.log : (() => { }); // eslint-disable-line @typescript-eslint/no-empty-function
+    const log = logEnabled ? console.log : () => { }; // eslint-disable-line @typescript-eslint/no-empty-function
     // Scan routes synchronously
     log('🔍 Scanning routes from:', dir); // eslint-disable-line no-console
-    const routes = (0, scanner_js_1.scanRoutes)(dir);
+    const scanOptions = {};
+    if (separator !== undefined) {
+        scanOptions.separator = separator;
+    }
+    if (maxDepth !== undefined) {
+        scanOptions.maxDepth = maxDepth;
+    }
+    const routes = (0, scanner_js_1.scanRoutes)(dir, '', scanOptions);
     if (routes.length === 0) {
         log('⚠️  No routes found'); // eslint-disable-line no-console
         log('   Create files like: users/GET.ts, users/[id]/PUT.ts'); // eslint-disable-line no-console

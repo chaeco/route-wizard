@@ -1,7 +1,8 @@
 /**
  * Route Registrar - Direct route registration for frameworks
  */
-export interface RegisterOptions {
+import { ScanOptions } from './scanner.js';
+export interface RegisterOptions extends ScanOptions {
     dir: string;
     prefix?: string;
     logEnabled?: boolean;
