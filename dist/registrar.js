@@ -40,6 +40,7 @@ function registerRoutes(app, options) {
         return;
     }
     // Register each route
+    let registeredCount = 0;
     routes.forEach((route) => {
         if (!route.handler) {
             log(`❌ No handler for ${route.method} ${route.path}`); // eslint-disable-line no-console
@@ -55,13 +56,14 @@ function registerRoutes(app, options) {
             else {
                 app[method](fullPath, route.handler);
             }
+            registeredCount++;
             log(`✅ ${route.method} ${fullPath}`); // eslint-disable-line no-console
         }
         else {
             log(`❌ Unsupported method: ${route.method}`); // eslint-disable-line no-console
         }
     });
-    log(`🎉 Registered ${routes.length} routes`); // eslint-disable-line no-console
+    log(`🎉 Registered ${registeredCount} routes`); // eslint-disable-line no-console
 }
 /**
  * Create route wizard middleware (for backward compatibility)
