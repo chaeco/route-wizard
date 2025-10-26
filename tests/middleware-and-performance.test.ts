@@ -31,6 +31,7 @@ describe('Middleware and Performance Monitoring', () => {
 
     mkdirSync(testDir, { recursive: true });
     mkdirSync(join(testDir, 'users'), { recursive: true });
+    mkdirSync(join(testDir, '[id]'), { recursive: true });
 
     // Create test route files
     writeFileSync(
