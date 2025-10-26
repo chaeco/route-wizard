@@ -8,6 +8,7 @@ export interface RegisterOptions extends ScanOptions {
     prefix?: string;
     logEnabled?: boolean;
     performanceMonitor?: PerformanceMonitor;
+    framework?: 'express' | 'koa' | 'fastify' | 'hoa';
 }
 /**
  * Register routes to application

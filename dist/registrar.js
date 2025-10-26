@@ -39,6 +39,8 @@ function registerRoutes(app, options) {
         log('   Create files like: users/GET.ts, users/[id]/PUT.ts'); // eslint-disable-line no-console
         return;
     }
+    // Determine framework type
+    const framework = options.framework || detectFramework(app);
     // Register each route
     let registeredCount = 0;
     routes.forEach((route) => {
@@ -48,22 +50,63 @@ function registerRoutes(app, options) {
         }
         const fullPath = prefix ? `${prefix}${route.path}` : route.path;
         const method = route.method.toLowerCase();
-        if (typeof app[method] === 'function') {
-            // Register route with optional middlewares
-            if (route.middlewares && route.middlewares.length > 0) {
-                app[method](fullPath, ...route.middlewares, route.handler);
+        try {
+            if (framework === 'hoa') {
+                // Hoa.js uses route() method with "METHOD /path" syntax
+                const routePattern = `${route.method.toUpperCase()} ${fullPath}`;
+                if (route.middlewares && route.middlewares.length > 0) {
+                    app.route(routePattern, ...route.middlewares, route.handler);
+                }
+                else {
+                    app.route(routePattern, route.handler);
+                }
+                registeredCount++;
+                log(`✅ ${route.method} ${fullPath}`); // eslint-disable-line no-console
+            }
+            else if (typeof app[method] === 'function') {
+                // Express, Koa, Fastify, etc.
+                if (route.middlewares && route.middlewares.length > 0) {
+                    app[method](fullPath, ...route.middlewares, route.handler);
+                }
+                else {
+                    app[method](fullPath, route.handler);
+                }
+                registeredCount++;
+                log(`✅ ${route.method} ${fullPath}`); // eslint-disable-line no-console
             }
             else {
-                app[method](fullPath, route.handler);
+                log(`❌ Unsupported method: ${route.method}`); // eslint-disable-line no-console
             }
-            registeredCount++;
-            log(`✅ ${route.method} ${fullPath}`); // eslint-disable-line no-console
         }
-        else {
-            log(`❌ Unsupported method: ${route.method}`); // eslint-disable-line no-console
+        catch (error) {
+            log(`❌ Failed to register ${route.method} ${fullPath}: ${error instanceof Error ? error.message : 'Unknown error'}`); // eslint-disable-line no-console
         }
     });
     log(`🎉 Registered ${registeredCount} routes`); // eslint-disable-line no-console
+}
+/**
+ * Detect the framework type from app instance
+ * @param app - Framework app instance
+ * @returns Detected framework type
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function detectFramework(app) {
+    // Check for Hoa.js
+    if (app.route && typeof app.route === 'function' && app.use && typeof app.use === 'function') {
+        if (app.extend && typeof app.extend === 'function') {
+            return 'hoa';
+        }
+    }
+    // Check for Express/Fastify (both have methods like get, post, etc.)
+    if (app.get && typeof app.get === 'function') {
+        return 'express';
+    }
+    // Check for Koa
+    if (app.use && typeof app.use === 'function' && !app.get) {
+        return 'koa';
+    }
+    // Default to express-like
+    return 'express';
 }
 /**
  * Create route wizard middleware (for backward compatibility)
