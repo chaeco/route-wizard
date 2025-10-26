@@ -8,9 +8,10 @@ exports.routeWizard = routeWizard;
 const scanner_js_1 = require("./scanner.js");
 /**
  * Register routes to application
- * @param app - Framework app instance (Express, Koa, etc.)
+ * @param app - Framework app instance (Express, Koa, Fastify, etc.)
  * @param options - Registration options
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function registerRoutes(app, options) {
     const { dir, prefix = '', logEnabled = true, separator, maxDepth } = options;
     // eslint-disable-next-line no-console
@@ -52,7 +53,9 @@ function registerRoutes(app, options) {
  * Create route wizard middleware (for backward compatibility)
  * @param options - Registration options
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function routeWizard(options) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (app) => {
         registerRoutes(app, options);
         // Return no-op middleware

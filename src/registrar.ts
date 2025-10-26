@@ -11,30 +11,12 @@ export interface RegisterOptions extends ScanOptions {
 }
 
 /**
- * Route handler function signature
- */
-export type RouteHandler = (req: unknown, res: unknown) => unknown;
-
-/**
- * Framework app interface with HTTP method handlers
- */
-export interface FrameworkApp {
-  get?: (path: string, handler: RouteHandler) => unknown;
-  post?: (path: string, handler: RouteHandler) => unknown;
-  put?: (path: string, handler: RouteHandler) => unknown;
-  delete?: (path: string, handler: RouteHandler) => unknown;
-  patch?: (path: string, handler: RouteHandler) => unknown;
-  head?: (path: string, handler: RouteHandler) => unknown;
-  options?: (path: string, handler: RouteHandler) => unknown;
-  [key: string]: unknown;
-}
-
-/**
  * Register routes to application
- * @param app - Framework app instance (Express, Koa, etc.)
+ * @param app - Framework app instance (Express, Koa, Fastify, etc.)
  * @param options - Registration options
  */
-export function registerRoutes(app: FrameworkApp, options: RegisterOptions): void {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function registerRoutes(app: any, options: RegisterOptions): void {
   const { dir, prefix = '', logEnabled = true, separator, maxDepth } = options;
 
   // eslint-disable-next-line no-console
@@ -82,8 +64,10 @@ export function registerRoutes(app: FrameworkApp, options: RegisterOptions): voi
  * Create route wizard middleware (for backward compatibility)
  * @param options - Registration options
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function routeWizard(options: RegisterOptions) {
-  return (app: FrameworkApp) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (app: any) => {
     registerRoutes(app, options);
     // Return no-op middleware
     return (ctx: unknown, next: () => void) => next();
