@@ -5,6 +5,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.7] - 2025-10-16
+
+### Added
+
+- **CommonJS module format support**: Full support for `module.exports` alongside ES6 `export default`
+  - Automatically detects and loads both module formats
+  - Can mix CommonJS and ES6 modules in the same project
+  - Examples: `export default (req, res) => {...}` and `module.exports = (req, res) => {...}`
+- **Enhanced handler loading**: Improved `loadHandler()` function to properly handle multiple module formats
+  - Explicit checks for ES6 default export
+  - Dedicated CommonJS module.exports handling
+  - Better type safety and error messages
+
+### Changed
+
+- **Improved handler loading logic**: More robust detection of module formats with better type checking
+- **Documentation update**: Added module format section to README explaining both formats
+
+## [0.0.6] - 2025-10-15
+
+### Added
+
+- **Hoa.js Framework Support**: Added automatic support for Hoa.js web framework
+  - Automatic framework detection and registration
+  - Support for Hoa.js-specific syntax: `app.route('METHOD /path', handler)`
+  - See HOA_GUIDE.md for detailed integration instructions
+
+### Fixed
+
+- **Route counting bug**: Now only counts successfully registered routes instead of all discovered routes
+- **Framework detection**: Improved detection logic to identify Express, Koa, Fastify, and Hoa.js
+
 ## [0.0.3] - 2025-10-15
 
 ### Added

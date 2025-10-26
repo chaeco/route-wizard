@@ -54,6 +54,10 @@ function registerRoutes(app, options) {
             if (framework === 'hoa') {
                 // Hoa.js uses route() method with "METHOD /path" syntax
                 const routePattern = `${route.method.toUpperCase()} ${fullPath}`;
+                if (typeof app.route !== 'function') {
+                    log(`❌ Hoa.js app.route() not available. Make sure you've called app.extend(nodeServer()) before registerRoutes()`); // eslint-disable-line no-console
+                    return;
+                }
                 if (route.middlewares && route.middlewares.length > 0) {
                     app.route(routePattern, ...route.middlewares, route.handler);
                 }

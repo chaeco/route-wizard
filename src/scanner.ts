@@ -139,19 +139,44 @@ export function scanRoutes(dir: string, basePath: string = '', options: ScanOpti
 
 /**
  * Load route handler from file
+ * Supports both ES6 (export default) and CommonJS (module.exports) formats
  */
 function loadHandler(filePath: string): ((...args: unknown[]) => unknown) | null {
   try {
     // Convert absolute path to relative path for require()
-    const relativePath = path.relative(__dirname, filePath);
+    const absolutePath = path.resolve(filePath);
 
     // Clear require cache in development
     if (process.env.NODE_ENV === 'development') {
-      delete require.cache[require.resolve(relativePath)];
+      delete require.cache[absolutePath];
     }
 
-    const module = require(relativePath);
-    return module.default || module;
+    const loadedModule = require(absolutePath);
+    
+    // Handle ES6 export default
+    if (loadedModule.default && typeof loadedModule.default === 'function') {
+      return loadedModule.default;
+    }
+    
+    // Handle CommonJS module.exports with function
+    if (typeof loadedModule === 'function') {
+      return loadedModule;
+    }
+    
+    // Handle CommonJS module.exports with default property
+    if (loadedModule.default) {
+      return loadedModule.default;
+    }
+    
+    // Fallback: return the entire module if it's an object
+    // (in case handler is exported differently)
+    if (typeof loadedModule === 'object' && loadedModule !== null) {
+      return loadedModule;
+    }
+    
+    // eslint-disable-next-line no-console
+    console.warn(`Handler at ${filePath} has unexpected format. Expected a function.`);
+    return null;
   } catch (error) {
     console.error(`Failed to load handler from ${filePath}:`, error);
     return null;

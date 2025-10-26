@@ -135,6 +135,32 @@ controllers/
 - `[param]` → `:param` (required parameter)
 - `[[param]]` → `:param?` (optional parameter)
 
+### Module Format Support
+
+Route-wizard supports both **ES6** and **CommonJS** module formats:
+
+**ES6 Format (recommended)**:
+
+```typescript
+// controllers/users/get.ts
+export default async (req, res) => {
+  const users = await db.users.findMany();
+  res.json(users);
+};
+```
+
+**CommonJS Format**:
+
+```javascript
+// controllers/users/get.js
+module.exports = async (req, res) => {
+  const users = await db.users.findMany();
+  res.json(users);
+};
+```
+
+Both formats are fully supported and can be mixed in the same project.
+
 ## 🔧 Advanced Usage
 
 ### Middleware Support
