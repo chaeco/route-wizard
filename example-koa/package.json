@@ -1,0 +1,25 @@
+{
+  "name": "route-wizard-koa-example",
+  "version": "1.0.0",
+  "description": "Koa.js example for @chaeco/route-wizard",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "keywords": [
+    "route-wizard",
+    "koa",
+    "routing",
+    "file-based"
+  ],
+  "author": "chaeco",
+  "license": "MIT",
+  "dependencies": {
+    "koa": "^2.14.0",
+    "@chaeco/route-wizard": "^0.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.0"
+  }
+}
