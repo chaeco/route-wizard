@@ -11,6 +11,7 @@ export interface Route {
     method: string;
     path: string;
     handler: ((...args: unknown[]) => unknown) | null;
+    middlewares?: ((...args: unknown[]) => unknown)[];
 }
 export interface ScanOptions {
     separator?: string;

@@ -137,7 +137,90 @@ controllers/
 
 ## 🔧 Advanced Usage
 
-### Custom Separator
+### Middleware Support
+
+Route Wizard supports per-route middleware configuration. You can attach middleware to routes that will be executed before the handler:
+
+```typescript
+// controllers/users/get.ts
+export default {
+  handler: async (req, res) => {
+    const users = await db.users.findMany();
+    res.json(users);
+  },
+  middlewares: [authenticate, authorize('admin')],
+};
+```
+
+Or with folder-based routing:
+
+```typescript
+// controllers/api/users/get.ts
+const authenticate = (req, res, next) => {
+  if (!req.headers.authorization) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  next();
+};
+
+const handler = async (req, res) => {
+  const users = await db.users.findMany();
+  res.json(users);
+};
+
+export default { handler, middlewares: [authenticate] };
+```
+
+### Performance Monitoring
+
+Monitor your route scanning and request performance:
+
+```typescript
+import express from 'express';
+import { registerRoutes, PerformanceMonitor, createRouteWizard } from '@chaeco/route-wizard';
+
+const app = express();
+
+// Option 1: Pass existing monitor
+const monitor = new PerformanceMonitor();
+registerRoutes(app, {
+  dir: './controllers',
+  performanceMonitor: monitor,
+});
+
+// Get metrics
+const metrics = monitor.getMetrics();
+console.log(`Route scan time: ${metrics.routeScanTime}ms`);
+console.log(`Total requests: ${metrics.totalRequests}`);
+console.log(`Cache hit rate: ${(metrics.cacheHitRate * 100).toFixed(1)}%`);
+
+// Get summary
+console.log(monitor.getMetricsSummary());
+
+// Option 2: Use route wizard with built-in monitoring
+const wizard = createRouteWizard({
+  dir: './controllers',
+  enableMonitoring: true,
+});
+
+wizard.register(app);
+
+// Access metrics from wizard
+const metrics = wizard.getMetrics();
+console.log(metrics?.routeScanTime);
+```
+
+#### PerformanceMonitor API
+
+- `recordRouteScan(duration: number)`: Record a route scanning operation
+- `recordRequest(responseTime: number)`: Record a request with response time
+- `recordCacheHit()`: Record a successful cache hit
+- `recordCacheMiss()`: Record a cache miss
+- `getMetrics()`: Get current performance metrics
+- `getMetricsSummary()`: Get a formatted summary string
+- `reset()`: Reset all metrics
+
+#### Custom Separator
 
 You can customize the separator used in filename-based routing:
 
@@ -245,6 +328,9 @@ Register routes to your application.
 - `dir` (string): Path to controllers directory (default: `'./controllers'`)
 - `prefix` (string): Route prefix (default: `''`)
 - `logEnabled` (boolean): Enable logging (default: `true`)
+- `separator` (string): Separator for filename-based routing (default: `'.'`)
+- `maxDepth` (number): Maximum depth for nested routes (optional)
+- `performanceMonitor` (PerformanceMonitor): Optional performance monitor instance
 
 #### Example
 
@@ -253,6 +339,112 @@ registerRoutes(app, {
   dir: './routes',
   prefix: '/api',
   logEnabled: false,
+});
+```
+
+### `createRouteWizard(options)`
+
+Create a route wizard with optional performance monitoring.
+
+#### Parameters
+
+- `options`: Configuration options
+
+#### Options
+
+- `dir` (string): Path to controllers directory
+- `prefix` (string): Route prefix (optional)
+- `logEnabled` (boolean): Enable logging (default: `true`)
+- `separator` (string): Separator for filename-based routing (default: `'.'`)
+- `maxDepth` (number): Maximum depth for nested routes (optional)
+- `enableMonitoring` (boolean): Enable performance monitoring (default: `false`)
+
+#### Returns
+
+Object with the following methods:
+- `register(app)`: Register routes to the app
+- `getMetrics()`: Get performance metrics
+- `getSummary()`: Get formatted metrics summary
+
+#### Example
+
+```typescript
+const wizard = createRouteWizard({
+  dir: './controllers',
+  enableMonitoring: true,
+});
+
+wizard.register(app);
+console.log(wizard.getMetrics());
+console.log(wizard.getSummary());
+```
+
+### `PerformanceMonitor`
+
+Monitor performance metrics for route operations.
+
+#### Methods
+
+- `recordRouteScan(duration: number)`: Record route scan duration
+- `recordRequest(responseTime: number)`: Record request response time
+- `recordCacheHit()`: Record cache hit
+- `recordCacheMiss()`: Record cache miss
+- `getMetrics()`: Get current metrics
+- `getMetricsSummary()`: Get formatted summary
+- `reset()`: Reset all metrics
+
+#### Metrics Properties
+
+- `routeScanTime` (number): Average route scan time in milliseconds
+- `cacheHitRate` (number): Cache hit rate (0-1)
+- `totalRequests` (number): Total number of requests
+- `averageResponseTime` (number): Average response time in milliseconds
+- `memoryUsage`: Node.js memory usage information
+- `uptime` (number): Monitor uptime in milliseconds
+
+#### Example
+
+```typescript
+const monitor = new PerformanceMonitor();
+monitor.recordRouteScan(50);
+monitor.recordRequest(100);
+monitor.recordCacheHit();
+
+const metrics = monitor.getMetrics();
+console.log(metrics.routeScanTime);
+console.log(monitor.getMetricsSummary());
+```
+
+### `scanRoutes(dir, options?)`
+
+Scan and return all routes from a directory.
+
+#### Parameters
+
+- `dir` (string): Path to controllers directory
+- `options` (ScanOptions): Scan options
+
+#### Options
+
+- `separator` (string): Separator for filename-based routing (default: `'.'`)
+- `maxDepth` (number): Maximum depth for nested routes (optional)
+
+#### Returns
+
+Array of Route objects with:
+- `method` (string): HTTP method (GET, POST, etc.)
+- `path` (string): Route path
+- `handler` (function): Route handler
+- `middlewares` (function[]): Optional middleware array
+
+#### Example
+
+```typescript
+import { scanRoutes } from '@chaeco/route-wizard';
+
+const routes = scanRoutes('./controllers');
+routes.forEach(route => {
+  console.log(`${route.method} ${route.path}`);
 });
 ```
 

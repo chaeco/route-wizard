@@ -5,7 +5,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.registerRoutes = registerRoutes;
 exports.routeWizard = routeWizard;
+exports.createRouteWizard = createRouteWizard;
 const scanner_js_1 = require("./scanner.js");
+const performance_js_1 = require("./utils/performance.js");
 /**
  * Register routes to application
  * @param app - Framework app instance (Express, Koa, Fastify, etc.)
@@ -13,9 +15,11 @@ const scanner_js_1 = require("./scanner.js");
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function registerRoutes(app, options) {
-    const { dir, prefix = '', logEnabled = true, separator, maxDepth } = options;
+    const { dir, prefix = '', logEnabled = true, separator, maxDepth, performanceMonitor, } = options;
     // eslint-disable-next-line no-console
     const log = logEnabled ? console.log : () => { }; // eslint-disable-line @typescript-eslint/no-empty-function
+    // Initialize performance monitor
+    const monitor = performanceMonitor || new performance_js_1.PerformanceMonitor();
     // Scan routes synchronously
     log('🔍 Scanning routes from:', dir); // eslint-disable-line no-console
     const scanOptions = {};
@@ -25,7 +29,11 @@ function registerRoutes(app, options) {
     if (maxDepth !== undefined) {
         scanOptions.maxDepth = maxDepth;
     }
+    const scanStartTime = Date.now();
     const routes = (0, scanner_js_1.scanRoutes)(dir, '', scanOptions);
+    const scanDuration = Date.now() - scanStartTime;
+    // Record scan performance
+    monitor.recordRouteScan(scanDuration);
     if (routes.length === 0) {
         log('⚠️  No routes found'); // eslint-disable-line no-console
         log('   Create files like: users/GET.ts, users/[id]/PUT.ts'); // eslint-disable-line no-console
@@ -40,7 +48,13 @@ function registerRoutes(app, options) {
         const fullPath = prefix ? `${prefix}${route.path}` : route.path;
         const method = route.method.toLowerCase();
         if (typeof app[method] === 'function') {
-            app[method](fullPath, route.handler);
+            // Register route with optional middlewares
+            if (route.middlewares && route.middlewares.length > 0) {
+                app[method](fullPath, ...route.middlewares, route.handler);
+            }
+            else {
+                app[method](fullPath, route.handler);
+            }
             log(`✅ ${route.method} ${fullPath}`); // eslint-disable-line no-console
         }
         else {
@@ -60,5 +74,22 @@ function routeWizard(options) {
         registerRoutes(app, options);
         // Return no-op middleware
         return (ctx, next) => next();
+    };
+}
+/**
+ * Create a route wizard with integrated performance monitoring
+ * @param options - Registration options
+ * @returns Object with register function and monitor instance
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function createRouteWizard(options) {
+    const monitor = options.enableMonitoring ? new performance_js_1.PerformanceMonitor() : undefined;
+    return {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        register: (app) => {
+            registerRoutes(app, { ...options, performanceMonitor: monitor });
+        },
+        getMetrics: () => monitor?.getMetrics(),
+        getSummary: () => monitor?.getMetricsSummary(),
     };
 }

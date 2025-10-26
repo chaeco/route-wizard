@@ -1,174 +1,517 @@
-# @chaeco/route-wizard# @chaeco/route-wizard
+# @chaeco/route-wizard# @chaeco/route-wizard# @chaeco/route-wizard# @chaeco/route-wizard
 
 
 
-[![NPM version](https://img.shields.io/npm/v/@chaeco/route-wizard.svg)](https://npmjs.org/package/@chaeco/route-wizard)[![NPM version](https://img.shields.io/npm/v/@chaeco/route-wizard.svg)](https://npmjs.org/package/@chaeco/route-wizard)
+[![NPM version](https://img.shields.io/npm/v/@chaeco/route-wizard.svg)](https://npmjs.org/package/@chaeco/route-wizard)
 
-[![Build Status](https://img.shields.io/github/actions/workflow/status/chaeco/route-wizard/ci.yml?branch=main)](https://github.com/chaeco/route-wizard/actions)[![Build Status](https://img.shields.io/github/actions/workflow/status/chaeco/route-wizard/ci.yml?branch=main)](https://github.com/chaeco/route-wizard/actions)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/chaeco/route-wizard/ci.yml?branch=main)](https://github.com/chaeco/route-wizard/actions)
 
-[![Test Coverage](https://img.shields.io/badge/coverage-67.47%25-yellow.svg)](https://github.com/chaeco/route-wizard)[![Test Coverage](https://img.shields.io/badge/coverage-47.44%25-yellow.svg)](https://github.com/chaeco/route-wizard)
+[![Test Coverage](https://img.shields.io/badge/coverage-67.47%25-yellow.svg)](https://github.com/chaeco/route-wizard)[![NPM version](https://img.shields.io/npm/v/@chaeco/route-wizard.svg)](https://npmjs.org/package/@chaeco/route-wizard)
 
-[![Codecov](https://codecov.io/gh/chaeco/route-wizard/branch/main/graph/badge.svg)](https://codecov.io/gh/chaeco/route-wizard)[![Codecov](https://codecov.io/gh/chaeco/route-wizard/branch/main/graph/badge.svg)](https://codecov.io/gh/chaeco/route-wizard)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org/)
 
-[![Bundle Size](https://img.shields.io/bundlephobia/min/@chaeco/route-wizard)](https://bundlephobia.com/result?p=@chaeco/route-wizard)[![Bundle Size](https://img.shields.io/bundlephobia/min/@chaeco/route-wizard)](https://bundlephobia.com/result?p=@chaeco/route-wizard)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)[![Build Status](https://img.shields.io/github/actions/workflow/status/chaeco/route-wizard/ci.yml?branch=main)](https://github.com/chaeco/route-wizard/actions)
 
-[![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)](https://github.com/chaeco/route-wizard/blob/main/package.json)[![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)](https://github.com/chaeco/route-wizard/blob/main/package.json)
 
-[![License](https://img.shields.io/github/license/chaeco/route-wizard)](https://github.com/chaeco/route-wizard/blob/main/LICENSE)[![License](https://img.shields.io/github/license/chaeco/route-wizard)](https://github.com/chaeco/route-wizard/blob/main/LICENSE)
 
-[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org/)[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org/)
+**基于文件的自动路由注册器，为 Node.js 框架提供零配置的路由管理。**[![Test Coverage](https://img.shields.io/badge/coverage-67.47%25-yellow.svg)](https://github.com/chaeco/route-wizard)[![NPM version](https://img.shields.io/npm/v/@chaeco/route-wizard.svg)](https://npmjs.org/package/@chaeco/route-wizard)[![NPM version](https://img.shields.io/npm/v/@chaeco/route-wizard.svg)](https://npmjs.org/package/@chaeco/route-wizard)
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
 
-[![GitHub issues](https://img.shields.io/github/issues/chaeco/route-wizard)](https://github.com/chaeco/route-wizard/issues)[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
 
-[![GitHub pull requests](https://img.shields.io/github/issues-pr/chaeco/route-wizard)](https://github.com/chaeco/route-wizard/pulls)[![GitHub issues](https://img.shields.io/github/issues/chaeco/route-wizard)](https://github.com/chaeco/route-wizard/issues)
+## ✨ 特性[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org/)
 
-[![Last commit](https://img.shields.io/github/last-commit/chaeco/route-wizard)](https://github.com/chaeco/route-wizard/commits/main)[![GitHub pull requests](https://img.shields.io/github/issues-pr/chaeco/route-wizard)](https://github.com/chaeco/route-wizard/pulls)
 
-[![Last commit](https://img.shields.io/github/last-commit/chaeco/route-wizard)](https://github.com/chaeco/route-wizard/commits/main)
 
-**基于文件的自动路由注册器，为 Node.js 框架提供零配置的路由管理。停止手动注册路由，让你的文件结构为你工作！**
+- 📁 **文件驱动路由**: 通过文件结构自动生成路由，零配置[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)[![Build Status](https://img.shields.io/github/actions/workflow/status/chaeco/route-wizard/ci.yml?branch=main)](https://github.com/chaeco/route-wizard/actions)[![Build Status](https://img.shields.io/github/actions/workflow/status/chaeco/route-wizard/ci.yml?branch=main)](https://github.com/chaeco/route-wizard/actions)
 
-基于文件的自动路由注册器，为 Node.js 框架提供零配置的路由管理。停止手动注册路由，让你的文件结构为你工作！
+- 🏗️ **多框架支持**: 支持 Express、Koa、Fastify 等框架
 
-## ✨ 特性
+- 📝 **完整 TypeScript 支持**: 完整的类型定义
 
-## ✨ 特性
+- ⚡ **高性能**: 同步扫描，零运行时开销
 
-- 📁 **文件驱动路由**: 通过文件结构自动生成路由，零配置
+- 🎯 **约定优于配置**: 合理的默认值和广泛的自定义选项**基于文件的自动路由注册器，为 Node.js 框架提供零配置的路由管理。**[![Test Coverage](https://img.shields.io/badge/coverage-67.47%25-yellow.svg)](https://github.com/chaeco/route-wizard)[![Test Coverage](https://img.shields.io/badge/coverage-47.44%25-yellow.svg)](https://github.com/chaeco/route-wizard)
 
-- 🏗️ **多框架支持**: 可扩展设计，支持 Express、Koa、Fastify 和 NestJS- 📁 **文件驱动路由**: 通过文件结构自动生成路由，零配置
+- 🔌 **中间件支持**: 为每个路由添加中间件
 
-- 📝 **完整 TypeScript 支持**: 完整的类型定义，提供更好的开发体验- 🏗️ **多框架支持**: 可扩展设计，支持 Express、Koa、Hoa.js、Hono、Fastify 和 NestJS
+- 📊 **性能监控**: 内置性能指标跟踪
 
-- ⚡ **高性能**: 同步扫描，零运行时开销- 📝 **完整 TypeScript 支持**: 完整的类型定义，提供更好的开发体验
 
-- 🧩 **框架无关**: 适用于任何支持路由注册的 Node.js 框架- ⚡ **高性能**: 同步扫描，零运行时开销
 
-- 🎯 **约定优于配置**: 合理的默认值和广泛的自定义选项- 🧩 **插件架构**: 易于扩展，支持为新框架创建自定义适配器
+## 🚀 安装## ✨ 特性[![Codecov](https://codecov.io/gh/chaeco/route-wizard/branch/main/graph/badge.svg)](https://codecov.io/gh/chaeco/route-wizard)[![Codecov](https://codecov.io/gh/chaeco/route-wizard/branch/main/graph/badge.svg)](https://codecov.io/gh/chaeco/route-wizard)
 
-- 🛡️ **生产就绪**: 全面的测试覆盖率和生产环境验证- 🎯 **约定优于配置**: 合理的默认值和广泛的自定义选项
 
-- 🔄 **动态参数**: 支持嵌套和可选参数- 🛡️ **生产就绪**: 全面的测试覆盖率和生产环境验证
-
-- 🔄 **动态参数**: 支持嵌套和可选参数
-
-## 🚀 安装
-
-## 🚀 安装
 
 ```bash
 
-npm install @chaeco/route-wizard```bash
+npm install @chaeco/route-wizard
 
-```npm install @chaeco/route-wizard
+```- 📁 **文件驱动路由**: 通过文件结构自动生成路由，零配置[![Bundle Size](https://img.shields.io/bundlephobia/min/@chaeco/route-wizard)](https://bundlephobia.com/result?p=@chaeco/route-wizard)[![Bundle Size](https://img.shields.io/bundlephobia/min/@chaeco/route-wizard)](https://bundlephobia.com/result?p=@chaeco/route-wizard)
+
+
+
+## 🎯 快速开始- 🏗️ **多框架支持**: 支持 Express、Koa、Fastify 等框架
+
+
+
+### 1. 创建控制器文件- 📝 **完整 TypeScript 支持**: 完整的类型定义[![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)](https://github.com/chaeco/route-wizard/blob/main/package.json)[![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)](https://github.com/chaeco/route-wizard/blob/main/package.json)
+
+
+
+在 `controllers` 目录下创建路由文件：- ⚡ **高性能**: 同步扫描，零运行时开销
+
+
+
+```typescript- 🎯 **约定优于配置**: 合理的默认值和广泛的自定义选项[![License](https://img.shields.io/github/license/chaeco/route-wizard)](https://github.com/chaeco/route-wizard/blob/main/LICENSE)[![License](https://img.shields.io/github/license/chaeco/route-wizard)](https://github.com/chaeco/route-wizard/blob/main/LICENSE)
+
+// controllers/users/get.ts
+
+export default async (req, res) => {- 🔌 **中间件支持**: 为每个路由添加中间件
+
+  const users = await db.users.findMany();
+
+  res.json(users);- 📊 **性能监控**: 内置性能指标跟踪[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org/)[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org/)
+
+};
 
 ```
 
-## 🎯 快速开始
 
-## 🎯 快速开始
 
-### 1. 创建控制器文件
+### 2. 注册路由## 🚀 安装[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
 
-### 1. 创建控制器文件
 
-在 `controllers` 目录下创建路由文件：
-
-在 `controllers` 目录下创建路由文件：
 
 ```typescript
 
-// controllers/users/get.ts```typescript
+import express from 'express';
 
-export default async (req, res) => {// controllers/users/get.ts
+import { registerRoutes } from '@chaeco/route-wizard';```bash[![GitHub issues](https://img.shields.io/github/issues/chaeco/route-wizard)](https://github.com/chaeco/route-wizard/issues)[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
 
-  const users = await db.users.findMany();export default async (req, res) => {
 
-  res.json(users);  const users = await db.users.findMany();
 
-};  res.json(users);
+const app = express();npm install @chaeco/route-wizard
+
+registerRoutes(app, {
+
+  dir: './controllers',```[![GitHub pull requests](https://img.shields.io/github/issues-pr/chaeco/route-wizard)](https://github.com/chaeco/route-wizard/pulls)[![GitHub issues](https://img.shields.io/github/issues/chaeco/route-wizard)](https://github.com/chaeco/route-wizard/issues)
+
+  prefix: '/api',
+
+});
+
+```
+
+## 🎯 快速开始[![Last commit](https://img.shields.io/github/last-commit/chaeco/route-wizard)](https://github.com/chaeco/route-wizard/commits/main)[![GitHub pull requests](https://img.shields.io/github/issues-pr/chaeco/route-wizard)](https://github.com/chaeco/route-wizard/pulls)
+
+### 3. 你的路由已准备好
+
+
+
+```text
+
+GET  /api/users### 1. 创建控制器文件[![Last commit](https://img.shields.io/github/last-commit/chaeco/route-wizard)](https://github.com/chaeco/route-wizard/commits/main)
+
+POST /api/users
+
+GET  /api/users/:id
+
+```
+
+在 `controllers` 目录下创建路由文件：**基于文件的自动路由注册器，为 Node.js 框架提供零配置的路由管理。停止手动注册路由，让你的文件结构为你工作！**
+
+## 📁 路由文件约定
+
+
+
+支持两种路由方式：
+
+```typescript基于文件的自动路由注册器，为 Node.js 框架提供零配置的路由管理。停止手动注册路由，让你的文件结构为你工作！
+
+### 方式一：基于文件夹
+
+// controllers/users/get.ts
+
+```text
+
+controllers/export default async (req, res) => {## ✨ 特性
+
+├── users/
+
+│   ├── get.ts        # GET /users  const users = await db.users.findMany();
+
+│   ├── post.ts       # POST /users
+
+│   └── [id]/  res.json(users);## ✨ 特性
+
+│       └── get.ts    # GET /users/:id
+
+```};
+
+
+
+### 方式二：基于文件名```- 📁 **文件驱动路由**: 通过文件结构自动生成路由，零配置
+
+
+
+```text
+
+controllers/
+
+├── users.get.ts           # GET /users### 2. 注册路由- 🏗️ **多框架支持**: 可扩展设计，支持 Express、Koa、Fastify 和 NestJS- 📁 **文件驱动路由**: 通过文件结构自动生成路由，零配置
+
+├── users.post.ts          # POST /users
+
+├── users.[id].get.ts      # GET /users/:id
+
+```
+
+```typescript- 📝 **完整 TypeScript 支持**: 完整的类型定义，提供更好的开发体验- 🏗️ **多框架支持**: 可扩展设计，支持 Express、Koa、Hoa.js、Hono、Fastify 和 NestJS
+
+## 🔧 中间件支持
+
+import express from 'express';
+
+```typescript
+
+// controllers/users/get.tsimport { registerRoutes } from '@chaeco/route-wizard';- ⚡ **高性能**: 同步扫描，零运行时开销- 📝 **完整 TypeScript 支持**: 完整的类型定义，提供更好的开发体验
+
+const authenticate = (req, res, next) => {
+
+  if (!req.headers.authorization) {
+
+    return res.status(401).json({ error: 'Unauthorized' });
+
+  }const app = express();- 🧩 **框架无关**: 适用于任何支持路由注册的 Node.js 框架- ⚡ **高性能**: 同步扫描，零运行时开销
+
+  next();
+
+};registerRoutes(app, {
+
+
+
+export default {  dir: './controllers',- 🎯 **约定优于配置**: 合理的默认值和广泛的自定义选项- 🧩 **插件架构**: 易于扩展，支持为新框架创建自定义适配器
+
+  handler: async (req, res) => {
+
+    const users = await db.users.findMany();  prefix: '/api',
+
+    res.json(users);
+
+  },});- 🛡️ **生产就绪**: 全面的测试覆盖率和生产环境验证- 🎯 **约定优于配置**: 合理的默认值和广泛的自定义选项
+
+  middlewares: [authenticate],
+
+};```
+
+```
+
+- 🔄 **动态参数**: 支持嵌套和可选参数- 🛡️ **生产就绪**: 全面的测试覆盖率和生产环境验证
+
+## 📊 性能监控
+
+### 3. 路由已就绪
+
+```typescript
+
+import { PerformanceMonitor, createRouteWizard } from '@chaeco/route-wizard';- 🔄 **动态参数**: 支持嵌套和可选参数
+
+
+
+// 方式 1: 使用 PerformanceMonitor```
+
+const monitor = new PerformanceMonitor();
+
+registerRoutes(app, {GET  /api/users## 🚀 安装
+
+  dir: './controllers',
+
+  performanceMonitor: monitor,POST /api/users
+
+});
+
+```## 🚀 安装
+
+const metrics = monitor.getMetrics();
+
+console.log(`Route scan time: ${metrics.routeScanTime}ms`);
+
+
+
+// 方式 2: 使用路由向导## 📁 文件约定```bash
+
+const wizard = createRouteWizard({
+
+  dir: './controllers',
+
+  enableMonitoring: true,
+
+});支持两种路由方式：npm install @chaeco/route-wizard```bash
+
+
+
+wizard.register(app);
+
+console.log(wizard.getMetrics());
+
+```### 基于文件夹```npm install @chaeco/route-wizard
+
+
+
+## 📚 API 参考
+
+
+
+### registerRoutes(app, options)``````
+
+
+
+#### 参数controllers/
+
+
+
+- `app`: 框架应用实例├── users/## 🎯 快速开始
+
+- `options`: 配置选项
+
+│   ├── get.ts        # GET /users
+
+#### 配置选项
+
+│   ├── post.ts       # POST /users## 🎯 快速开始
+
+- `dir` (string): 控制器目录路径
+
+- `prefix` (string): 路由前缀│   └── [id]/
+
+- `logEnabled` (boolean): 是否启用日志 (默认: true)
+
+- `separator` (string): 文件名分隔符 (默认: '.')│       └── get.ts    # GET /users/:id### 1. 创建控制器文件
+
+- `maxDepth` (number): 最大路由深度
+
+- `performanceMonitor` (PerformanceMonitor): 性能监控器实例```
+
+
+
+### createRouteWizard(options)### 1. 创建控制器文件
+
+
+
+创建一个具有性能监控的路由向导。### 基于文件名
+
+
+
+#### 返回值在 `controllers` 目录下创建路由文件：
+
+
+
+- `register(app)`: 注册路由```
+
+- `getMetrics()`: 获取性能指标
+
+- `getSummary()`: 获取指标总结controllers/在 `controllers` 目录下创建路由文件：
+
+
+
+### PerformanceMonitor├── users.get.ts           # GET /users
+
+
+
+#### 公开方法├── users.post.ts          # POST /users```typescript
+
+
+
+- `recordRouteScan(duration: number)`: 记录路由扫描时长├── users.[id].get.ts      # GET /users/:id
+
+- `recordRequest(responseTime: number)`: 记录请求响应时间
+
+- `recordCacheHit()`: 记录缓存命中```// controllers/users/get.ts```typescript
+
+- `recordCacheMiss()`: 记录缓存未命中
+
+- `getMetrics()`: 获取当前指标
+
+- `getMetricsSummary()`: 获取格式化总结
+
+## 🔧 中间件支持export default async (req, res) => {// controllers/users/get.ts
+
+## 📄 许可证
+
+
+
+MIT © [chaeco](https://github.com/chaeco)
+
+```typescript  const users = await db.users.findMany();export default async (req, res) => {
+
+// controllers/users/get.ts
+
+const authenticate = (req, res, next) => {  res.json(users);  const users = await db.users.findMany();
+
+  if (!req.headers.authorization) {
+
+    return res.status(401).json({ error: 'Unauthorized' });};  res.json(users);
+
+  }
+
+  next();};
 
 };
 
 // controllers/users/post.ts
 
-export default async (req, res) => {// controllers/users/post.ts
+export default {
 
-  const user = await db.users.create({ data: req.body });export default async (req, res) => {
+  handler: async (req, res) => {export default async (req, res) => {// controllers/users/post.ts
 
-  res.json(user);  const user = await db.users.create({ data: req.body });
+    const users = await db.users.findMany();
 
-};  res.json(user);
+    res.json(users);  const user = await db.users.create({ data: req.body });export default async (req, res) => {
+
+  },
+
+  middlewares: [authenticate],  res.json(user);  const user = await db.users.create({ data: req.body });
 
 };
 
-// controllers/users/[id]/get.ts
+```};  res.json(user);
+
+
+
+## 📊 性能监控};
+
+
+
+```typescript// controllers/users/[id]/get.ts
+
+import { PerformanceMonitor, createRouteWizard } from '@chaeco/route-wizard';
 
 export default async (req, res) => {// controllers/users/[id]/get.ts
 
-  const user = await db.users.findUnique({export default async (req, res) => {
+// 方式 1: 使用 PerformanceMonitor
 
-    where: { id: req.params.id },  const user = await db.users.findUnique({
+const monitor = new PerformanceMonitor();  const user = await db.users.findUnique({export default async (req, res) => {
 
-  });    where: { id: req.params.id },
+registerRoutes(app, {
 
-  res.json(user);  });
+  dir: './controllers',    where: { id: req.params.id },  const user = await db.users.findUnique({
+
+  performanceMonitor: monitor,
+
+});  });    where: { id: req.params.id },
+
+
+
+const metrics = monitor.getMetrics();  res.json(user);  });
+
+console.log(`Route scan time: ${metrics.routeScanTime}ms`);
 
 };  res.json(user);
 
-```};
+// 方式 2: 使用路由向导
 
-```
+const wizard = createRouteWizard({```};
 
-### 2. 注册路由
+  dir: './controllers',
 
-### 2. 注册路由
-
-```typescript
-
-import express from 'express';```typescript
-
-import { registerRoutes } from '@chaeco/route-wizard';import express from 'express';
-
-import { registerRoutes } from '@chaeco/route-wizard';
-
-const app = express();
-
-app.use(express.json());const app = express();
-
-app.use(express.json());
-
-// 注册路由 - 就是这么简单！
-
-registerRoutes(app, {// 注册路由 - 就是这么简单！
-
-  dir: './controllers',registerRoutes(app, {
-
-  prefix: '/api', // 可选  dir: './controllers',
-
-});  prefix: '/api', // 可选
+  enableMonitoring: true,```
 
 });
 
-app.listen(3000, () => {
+### 2. 注册路由
 
-  console.log('服务器运行在 http://localhost:3000');app.listen(3000, () => {
+wizard.register(app);
 
-});  console.log('服务器运行在 http://localhost:3000');
-
-```});
+console.log(wizard.getMetrics());### 2. 注册路由
 
 ```
 
-### 3. 你的路由已就绪
+```typescript
 
-### 3. 你的路由已就绪
+## 📚 API 参考
 
-```text
+import express from 'express';```typescript
 
-GET    /api/users          # 获取所有用户```text
+### `registerRoutes(app, options)`
+
+import { registerRoutes } from '@chaeco/route-wizard';import express from 'express';
+
+#### 参数
+
+import { registerRoutes } from '@chaeco/route-wizard';
+
+- `app`: 框架应用实例
+
+- `options`: 配置选项const app = express();
+
+
+
+#### 选项app.use(express.json());const app = express();
+
+
+
+- `dir` (string): 控制器目录路径app.use(express.json());
+
+- `prefix` (string): 路由前缀
+
+- `logEnabled` (boolean): 是否启用日志 (默认: `true`)// 注册路由 - 就是这么简单！
+
+- `separator` (string): 文件名分隔符 (默认: `'.'`)
+
+- `maxDepth` (number): 最大路由深度registerRoutes(app, {// 注册路由 - 就是这么简单！
+
+- `performanceMonitor` (PerformanceMonitor): 性能监控器实例
+
+  dir: './controllers',registerRoutes(app, {
+
+### `createRouteWizard(options)`
+
+  prefix: '/api', // 可选  dir: './controllers',
+
+创建一个具有性能监控的路由向导。
+
+});  prefix: '/api', // 可选
+
+#### 返回
+
+});
+
+- `register(app)`: 注册路由
+
+- `getMetrics()`: 获取性能指标app.listen(3000, () => {
+
+- `getSummary()`: 获取指标总结
+
+  console.log('服务器运行在 http://localhost:3000');app.listen(3000, () => {
+
+### `PerformanceMonitor`
+
+});  console.log('服务器运行在 http://localhost:3000');
+
+#### 方法
+
+```});
+
+- `recordRouteScan(duration: number)`: 记录路由扫描时长
+
+- `recordRequest(responseTime: number)`: 记录请求响应时间```
+
+- `recordCacheHit()`: 记录缓存命中
+
+- `recordCacheMiss()`: 记录缓存未命中### 3. 你的路由已就绪
+
+- `getMetrics()`: 获取当前指标
+
+- `getMetricsSummary()`: 获取格式化总结### 3. 你的路由已就绪
+
+
+
+## 📄 许可证```text
+
+
+
+MIT © [chaeco](https://github.com/chaeco)GET    /api/users          # 获取所有用户```text
+
 
 POST   /api/users          # 创建用户GET    /api/users          # 获取所有用户
 
