@@ -3,7 +3,7 @@
  */
 
 export { scanRoutes, Route } from './scanner.js';
-export { registerRoutes, RegisterOptions } from './registrar.js';
+export { registerRoutes, RegisterOptions, FrameworkApp, RouteHandler } from './registrar.js';
 
 // Simple usage example:
 //

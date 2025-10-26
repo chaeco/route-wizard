@@ -11,11 +11,30 @@ export interface RegisterOptions extends ScanOptions {
 }
 
 /**
+ * Route handler function signature
+ */
+export type RouteHandler = (req: unknown, res: unknown) => unknown;
+
+/**
+ * Framework app interface with HTTP method handlers
+ */
+export interface FrameworkApp {
+  get?: (path: string, handler: RouteHandler) => unknown;
+  post?: (path: string, handler: RouteHandler) => unknown;
+  put?: (path: string, handler: RouteHandler) => unknown;
+  delete?: (path: string, handler: RouteHandler) => unknown;
+  patch?: (path: string, handler: RouteHandler) => unknown;
+  head?: (path: string, handler: RouteHandler) => unknown;
+  options?: (path: string, handler: RouteHandler) => unknown;
+  [key: string]: unknown;
+}
+
+/**
  * Register routes to application
  * @param app - Framework app instance (Express, Koa, etc.)
  * @param options - Registration options
  */
-export function registerRoutes(app: Record<string, unknown>, options: RegisterOptions): void {
+export function registerRoutes(app: FrameworkApp, options: RegisterOptions): void {
   const { dir, prefix = '', logEnabled = true, separator, maxDepth } = options;
 
   // eslint-disable-next-line no-console
@@ -64,7 +83,7 @@ export function registerRoutes(app: Record<string, unknown>, options: RegisterOp
  * @param options - Registration options
  */
 export function routeWizard(options: RegisterOptions) {
-  return (app: Record<string, unknown>) => {
+  return (app: FrameworkApp) => {
     registerRoutes(app, options);
     // Return no-op middleware
     return (ctx: unknown, next: () => void) => next();
